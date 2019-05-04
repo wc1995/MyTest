@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Ball</title>
+	<style>
+		*{
+			padding:0;
+			margin:0;
+		}
+		html,body{
+			width:100%;
+			height:100%;
+			overflow:hidden;
+			position:relative;
+		}
+		#bird{
+			width:50px;
+			height:50px;
+			background:red;
+			border-radius:50%;
+			position:absolute;
+			top:calc(100% - 50px);
+			left:calc(50% - 25px);
+		}
+	</style>
+</head>
+<body>
+	<div id="bird"></div>
+	<script>
+
+		var bird = document.getElementById("bird");
+
+		var R = 50;
+		var maxW = document.body.clientWidth;
+		var maxH = document.body.clientHeight;
+
+		var t = null, frequency = 1000/60 , time = 0;
+
+		var g = 10, m = 1, f = 1, n = 0.9 , F = 0.99;
+		//  重力    质量    空气阻力 反弹系数 摩擦阻力
+
+		function init(){
+			bird.style.left = bird.offsetLeft+"px";
+			bird.style.top = bird.offsetTop+"px";
+		}
+		
+		function isSideBoundary(x){
+			if(x <= 0){
+				return 'left';
+			}else if(x >= maxW - R){
+				return 'right';
+			}else{
+				return false;
+			}
+		}
+
+		function isBottomBoundary(y){
+			if(y <= 0){
+				return 'top';
+			}else if(y >= maxH - R){
+				return 'bottom';
+			}else{
+				return false;
+			}
+		}
+
+		// console.log(isBoundary(1,1));
+		function gforce(x,y,vx,vy){
+			var ax = 0 ;
+			var ay = m*(g - f);
+
+			// var vx = 0;
+			// var vy = 0;
+			
+			t = setInterval(function(){
+				time = frequency/100;
+				vx += ax*time;
+				vy += ay*time;
+
+				x += vx*time;
+				y += vy*time;
+
+				if(isBottomBoundary(y)){
+					if(isBottomBoundary(y) == "top"){
+						vy = Math.abs(-vy*n);
+					}else if(isBottomBoundary(y) == "bottom"){
+						vy = -1*Math.abs(-vy*n);
+					}
+					if(vy >= -1){
+						vx = F*vx;
+						if(Math.abs(vx)<= 1){
+							console.log('end')
+							clearInterval(t);
+						}
+					}else{
+						bird.style.top = maxH - R + "px";
+					}
+				}else{
+					bird.style.top = y + "px";
+				}
+
+				if(isSideBoundary(x)){
+					if(isSideBoundary(x) == "left"){
+						vx = Math.abs(-1*(vx*n).toFixed(6));
+					}else if(isSideBoundary(x) == "right"){
+						vx = -1*Math.abs(-1*(vx*n).toFixed(6));
+					}
+					// vx = -1*(vx*n).toFixed(6);
+					// console.log(vx);
+				}else{
+					bird.style.left = x + "px";
+				}
+			},frequency);
+		}
+
+		init();
+
+		bird.onmousedown = function(e){
+			clearInterval(t);
+
+			var ox = e.clientX;
+			var oy = e.clientY;
+
+			document.onmousemove = function(f){
+				var ex = bird.offsetLeft;
+				var ey = bird.offsetTop;
+				bird.style.left = ex + f.clientX - ox+"px";
+				bird.style.top = ey + f.clientY - oy+"px";
+				ox = f.clientX;
+				oy = f.clientY;
+			};
+
+			document.onmouseup = function(g){
+				var startX = g.clientX;
+				var startY = g.clientY;
+
+				//瞬时时间
+				var sTime = 1;
+
+				document.onmousemove = null;
+				document.onmouseup = null;
+
+				setTimeout(function(){
+					document.onmousemove = function(h){
+						var endX = h.clientX;
+						var endY = h.clientY;
+
+						var speedX = (endX - startX)/sTime;
+						var speedY = (endY - startY)/sTime;;
+
+						// console.log(speedX);
+						// console.log(speedY);
+
+						gforce(bird.offsetLeft,bird.offsetTop,speedX,speedY);
+
+						document.onmousemove = null;
+					}
+				},sTime);
+			};
+		};
+	</script>
+</body>
+</html>

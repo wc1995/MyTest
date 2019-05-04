@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Snake</title>
+	<style>
+		*{
+			padding:0;
+			margin:0;
+		}
+		body,html{
+			width:100%;
+			height:100%;
+			overflow:hidden;
+			position:relative;
+			background-color:#eee;
+		}
+		#boundary{
+			width:400px;
+			height:400px;
+			position:absolute;
+			left:0;
+			right:0;
+			bottom:0;
+			top:0;
+			margin:auto;
+			background-color:#fff;
+			border:5px solid #ccc;
+		}
+		.block{
+			position:absolute;
+			border:1px solid #333;
+		}
+	</style>
+</head>
+<body>
+	<div id="boundary"></div>
+	<script>
+		var boundary = document.getElementById('boundary');
+		var maxWidth = boundary.offsetWidth;
+		var maxHeight = boundary.offsetHeight;
+		var blockWidth = 10;
+		var blockHeight = 10;
+		var snakeColor = "#f00";
+		var starList = [];
+		var start = false;
+
+		Array.prototype.indexOf = function(val){
+			for(var i=0;i<this.length;i++){
+				if(this[i] == val){
+					return i;
+				}
+				return -1;
+			}
+		};
+
+		Array.prototype.remove = function(val){
+			var index = this.indexOf(val);
+			if(index > -1){
+				this.splice(index,1);
+			}
+		}
+
+		function Snake(x,y,speed){
+			this.x = x;
+			this.y = y;
+			this.ax = 0;
+			this.ay = 0;
+			this.speed = speed;
+			this.blockList = [];
+			this.create(x,y);
+			this.move();
+		}
+
+		Snake.prototype.create = function(x,y){
+			var block = document.createElement('div');
+			block.id = 'snakeBlock';
+			block.className = 'block';
+			block.style.left = x+'px';
+			block.style.top = y+'px';
+			block.style.width = blockWidth-2+'px';
+			block.style.height = blockHeight-2+'px';
+			block.style.backgroundColor = snakeColor;
+			block.x = x;
+			block.y = y;
+			boundary.appendChild(block);
+			this.blockList.push(block);
+		}
+
+		Snake.prototype.move = function(){
+			var that = this;
+			document.onkeydown = function(e){
+				if(!start){
+					start = true;
+					that.timeHandler();
+				}else{
+
+				}
+				switch(e.keyCode){
+					case 38:
+						if(that.ay != 1){
+							that.ax = 0;
+							that.ay = -1;
+						}
+						break;
+					case 40:
+						if(that.ay != -1){
+							that.ax = 0;
+							that.ay = 1;
+						}
+						break;
+					case 37:
+						if(that.ax != 1){
+							that.ax = -1;
+							that.ay = 0;
+						}
+						break;
+					case 39:
+						if(that.ax != -1){
+							that.ax = 1;
+							that.ay = 0;
+						}
+						break;
+				}
+			}
+		}
+
+		Snake.prototype.timeHandler = function(){
+			var that = this;
+			var count = 0;
+			var twice = 0;
+			var time = null;
+			time = setInterval(function(){
+				count++;
+				if(count==30){
+					count = 0;
+					if(twice >=2){
+						twice = 0;
+						new Star();
+					}else{
+						twice++;
+					}
+					that.x += that.ax*blockWidth;
+					that.y += that.ay*blockHeight;
+					if(!isBoundary(that.x,that.y)){
+						if(!touchSelf(that.x,that.y)){
+							that.create(that.x,that.y);
+							if(that.crash()>=0){
+								new Star(that.crash());
+							}else{
+								that.delete();
+							}
+						}else{
+							alert("游戏结束");
+							clearInterval(time);
+							time = null;
+							console.log("fuck");
+						}
+					}else{
+						alert("游戏结束");
+						clearInterval(time);
+						time = null;
+						// for(var i = 0; i < that.blockList.length;i++){
+						// 	that.delete();
+						// }
+						// that.blockList = [];
+						// that.create((maxWidth-blockWidth)/2,(maxHeight-blockHeight)/2);
+						// that.x = (maxWidth-blockWidth)/2;
+						// that.y = (maxHeight-blockHeight)/2;
+						// start = false;
+					}
+				}
+			},1000/60);
+
+			function isBoundary(x,y){
+				if(x > maxWidth - blockWidth*2 || x < 0 || y > maxHeight- blockHeight*2 || y < 0){
+					return true;
+				}else{
+					return false;
+				}
+			}
+
+			function touchSelf(x,y){
+				if(that.blockList.length >= 4){
+					for(var i = 0; i <= that.blockList.length-1-3 ; i++){
+						if(Math.abs(x-that.blockList[i].x)==0&&Math.abs(y-that.blockList[i].y)==0){
+							return true;
+						}
+					}
+					return false;
+				}else{
+					return false;
+				}
+			}
+		}
+
+		Snake.prototype.delete = function(){
+			var that = this;
+			boundary.removeChild(this.blockList.shift());
+		}
+
+		Snake.prototype.crash = function(){
+			for(var i=0;i<starList.length;i++){
+				// console.log(starList[i].x,starList[i].y);
+				if(Math.abs(this.x-starList[i].x)<blockWidth&&Math.abs(this.y-starList[i].y)<blockHeight){
+					// alert(123);
+					return i;
+				}
+			}
+			return -1;
+		}
+
+		function Star(index){
+			if(typeof(index) != 'undefined'){
+				this.delete(index);
+			}
+			if(starList.length < 6){
+				this.create();
+			}else{
+				this.delete();
+			}
+			// this.create();
+		}
+
+		Star.prototype.create = function(){
+			var star = document.createElement('div');
+			star.id = 'starBlock';
+			star.className = 'block';
+			var left = Random(parseInt(Math.random()*(maxWidth-blockWidth)));
+			var top = Random(parseInt(Math.random()*(maxHeight-blockHeight)));
+			this.x = left;
+			this.y = top;
+			star.style.width = blockWidth-2+'px';
+			star.style.height = blockHeight-2+'px';
+			star.style.left = left+'px';
+			star.style.top = top+'px';
+			star.style.backgroundColor = '#ff0';
+			star.x = left;
+			star.y = top;
+			boundary.appendChild(star);
+			starList.push(star);
+
+			function Random(val){
+				return val[val.length-1]>5?(parseInt(val/10)+1)*10:parseInt(val/10)*10
+			}
+		}
+
+		Star.prototype.delete = function(index){
+			if(typeof(index)!='undefined'){
+				boundary.removeChild(starList[index]);
+				starList.splice(index,1);
+			}else{
+				boundary.removeChild(starList.shift());
+			}
+		}
+
+		new Snake((maxWidth-blockWidth)/2,(maxHeight-blockHeight)/2,1);
+
+	</script>
+</body>
+</html>
