@@ -14,7 +14,7 @@
 			overflow:hidden;
 			position:relative;
 		}
-		#bird{
+		#ball{
 			width:50px;
 			height:50px;
 			background:red;
@@ -26,10 +26,10 @@
 	</style>
 </head>
 <body>
-	<div id="bird"></div>
+	<div id="ball"></div>
 	<script>
 
-		var bird = document.getElementById("bird");
+		var ball = document.getElementById("ball");
 
 		var R = 50;
 		var maxW = document.body.clientWidth;
@@ -41,8 +41,8 @@
 		//  重力    质量    空气阻力 反弹系数 摩擦阻力
 
 		function init(){
-			bird.style.left = bird.offsetLeft+"px";
-			bird.style.top = bird.offsetTop+"px";
+			ball.style.left = ball.offsetLeft+"px";
+			ball.style.top = ball.offsetTop+"px";
 		}
 		
 		function isSideBoundary(x){
@@ -65,13 +65,12 @@
 			}
 		}
 
-		// console.log(isBoundary(1,1));
 		function gforce(x,y,vx,vy){
 			var ax = 0 ;
 			var ay = m*(g - f);
 
-			// var vx = 0;
-			// var vy = 0;
+			var vx = 0;
+			var vy = 0;
 			
 			t = setInterval(function(){
 				time = frequency/100;
@@ -94,10 +93,10 @@
 							clearInterval(t);
 						}
 					}else{
-						bird.style.top = maxH - R + "px";
+						ball.style.top = maxH - R + "px";
 					}
 				}else{
-					bird.style.top = y + "px";
+					ball.style.top = y + "px";
 				}
 
 				if(isSideBoundary(x)){
@@ -106,27 +105,25 @@
 					}else if(isSideBoundary(x) == "right"){
 						vx = -1*Math.abs(-1*(vx*n).toFixed(6));
 					}
-					// vx = -1*(vx*n).toFixed(6);
-					// console.log(vx);
 				}else{
-					bird.style.left = x + "px";
+					ball.style.left = x + "px";
 				}
 			},frequency);
 		}
 
 		init();
 
-		bird.onmousedown = function(e){
+		ball.onmousedown = function(e){
 			clearInterval(t);
 
 			var ox = e.clientX;
 			var oy = e.clientY;
 
 			document.onmousemove = function(f){
-				var ex = bird.offsetLeft;
-				var ey = bird.offsetTop;
-				bird.style.left = ex + f.clientX - ox+"px";
-				bird.style.top = ey + f.clientY - oy+"px";
+				var ex = ball.offsetLeft;
+				var ey = ball.offsetTop;
+				ball.style.left = ex + f.clientX - ox+"px";
+				ball.style.top = ey + f.clientY - oy+"px";
 				ox = f.clientX;
 				oy = f.clientY;
 			};
@@ -147,12 +144,9 @@
 						var endY = h.clientY;
 
 						var speedX = (endX - startX)/sTime;
-						var speedY = (endY - startY)/sTime;;
+						var speedY = (endY - startY)/sTime;
 
-						// console.log(speedX);
-						// console.log(speedY);
-
-						gforce(bird.offsetLeft,bird.offsetTop,speedX,speedY);
+						gforce(ball.offsetLeft,ball.offsetTop,speedX,speedY);
 
 						document.onmousemove = null;
 					}
