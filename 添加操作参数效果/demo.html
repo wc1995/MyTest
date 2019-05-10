@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>demo</title>
+	<link rel="stylesheet" href="./css/iconfont.css">
+	<style>
+		*{
+			margin:0;
+			padding:0;
+		}
+		html,body{
+			width:100%;
+			height:100%;
+			overflow:hidden;
+		}
+		body{
+			position:relative;
+		}
+		li,ul,ol{
+			list-style:none;
+		}
+		.operationBox{
+			width:100%;
+			height:100%;
+			display:flex;
+			position:relative;
+		}
+		.optionBox{
+			width:15%;
+			height:100%;
+			background:#333;
+		}
+		.optionTitle{
+			color:#fff;
+			text-align:center;
+			margin:10px 0;
+		}
+		.optionList{
+			width:100%;
+			height:auto;
+		}
+		.optionLi{
+			color:#fff;
+			width:100%;
+			height:50px;
+			line-height:50px;
+			text-align:center;
+			cursor:pointer;
+		}
+		.optionBtn{
+			display:block;
+			width:100%;
+			height:100%;
+			border: 0;
+			background-color: transparent;
+			outline: none;
+			color:#fff;
+		}
+		.optionBtn:active{
+			background:#111;
+			color:#ccc;
+		}
+		.shownBox{
+			flex:1;
+			height:100%;
+			position:relative;
+			display:flex;
+			flex-direction:column;
+		}
+		.shownBox .innerBox{
+			width:100%;
+			height:auto;
+			position:relative;
+			background:rgba(0,0,0,.5);
+		}
+		.shownBox .innerBox img{
+			width:100%;
+			height:auto;
+			position:absolute;
+			top:0;
+			bottom:0;
+			left:0;
+			right:0;
+		}
+		.postBtnBox{
+			width:100%;
+			background-color:#ccc;
+			flex:1;
+			display:flex;
+			align-items:flex-end;
+			justify-content:flex-end;
+		}
+		.postBtnBox .btn{
+			margin-bottom:30px;
+		}
+		.paramBox{
+			position:absolute;
+			/*width:300px;*/
+			height:auto;
+			background:#fff;
+			border-radius:5px;
+		}
+		.paramBox .header{
+			border-radius:5px 5px 0 0;
+			display:flex;
+			width:100%;
+			background-color:#D8D8D8;
+			justify-content:space-between;
+			box-sizing:border-box;
+			padding-right:10px;
+			position:relative;
+		}
+		.paramBox .header .title{
+			flex:1;
+			padding:10px;
+			/*cursor:pointer;*/
+			box-sizing:border-box;
+		}
+		.paramBox .header .getName{
+			cursor:pointer;
+		}
+		.paramBox .header .setName{
+			position:absolute;
+			top:0;
+			left:0;
+			margin:10px;
+			display:none;
+		}
+		.paramBox .header .deleteBtn{
+			cursor: pointer;
+			display:block;
+			padding:10px;
+		}
+		.paramBox .body{
+			width:100%;
+			box-sizing:border-box;
+			padding:10px;
+		}
+		.paramBox .body .params_li{
+			display:flex;
+			padding:10px 0;
+			cursor:pointer;
+		}
+		.paramBox .body .params_li:hover{
+			background:#ccc;
+			color:#333;
+		}
+		.params_li span{
+			padding:0 5px;
+		}
+		.params_li .answer{
+			flex:1;
+			text-align:center;
+		}
+		.hiddenBox{
+			position:absolute;
+			width:100%;
+			height:100%;
+			background-color:#000;
+			opacity:0.5;
+			display:none;
+			z-index:7777;
+		}
+		.editBox{
+			position:absolute;
+			z-index:8888;
+			background-color:#eee;
+			border-radius:5px;
+			box-shadow:1px 1px 10px #000;
+			display:flex;
+			flex-direction:column;
+		}
+		.editBox .header{
+			display:flex;
+			background-color:#333;
+			color:#fff;
+			font-size:20px;
+			padding:0 10px;
+			box-sizing:border-box;
+			border-radius:5px 5px 0 0;
+		}
+		.editBox .header .title{
+			flex:1;
+			height:100%;
+			padding:10px 0;
+		}
+		.editBox .header .quitEdit{
+			cursor: pointer;
+			display:block;
+			padding:10px;
+		}
+		.editBox .body{
+			width:100%;
+			flex:1;
+			overflow:auto;
+			background-color:#fff;
+			display:flex;
+			flex-direction:column;
+			align-items:center;
+		}
+		.editBox .body .infoList{
+			width:100%;
+			height:auto;
+		}
+		.editBox .body .infoItem{
+			width:100%;
+			display:flex;
+			align-items:center;
+			margin:10px;
+			box-sizing:border-box;
+		}
+		.editBox .body .infoItem label{
+			display:block;
+			width:40%;
+			text-align:center;
+			font-size:16px;
+		}
+		.editBox .body .infoItem .inputVal{
+			flex:1;
+			height:auto;
+			display:flex;
+			justify-content:center;
+		}
+		.editBox .body .infoItem .pointVal{
+			width:80%;
+			height:30px;
+		}
+		.editBox .body .infoItem #textarea{
+			height:80px;
+		}
+		.editBox .footer{
+			height:60px;
+			border-top:1px solid #ccc;
+			box-sizing:border-box;
+			margin:0 10px 10px;
+			padding-top:10px;
+			display:flex;
+			justify-content:flex-end;
+			align-items:center;
+		}
+		.btn{
+			margin:0 10px;
+			padding:0px 15px;
+			height:35px;
+		}
+		.postTipBox{
+			position:absolute;
+			background-color:#333;
+			z-index:9999;
+			display:flex;
+			flex-direction:column;
+		}
+		.postTipBox .header{
+			width:100%;
+			height:50px;
+			display:flex;
+			justify-content:space-between;
+			color:#fff;
+			align-items:center;
+			padding-left:20px;
+			box-sizing:border-box;
+		}
+		.postTipBox .header .returnMenu{
+			display:block;
+			padding:0 20px;
+			height:50px;
+			line-height:50px;
+		}
+		.postTipBox .body{
+			width:100%;
+			flex:1;
+		}
+		.postTipBox .footer{
+			width:100%;
+			height:50px;
+			display:flex;
+			justify-content:flex-end;
+			align-items:center;
+		}
+		.myScreenPic{
+			left:0;
+			right:0;
+			top:0;
+			bottom:0;
+			margin:auto;
+		}
+	</style>
+</head>
+<body oncontextmenu='return false' ondragstart='return false' onselectstart ='return false' oncopy='document.selection.empty()'>
+	<div class="operationBox">
+		<div class="optionBox">
+			<h2 class="optionTitle">参数列表</h2>
+			<ul class="optionList"></ul>
+		</div>
+		<div class="shownBox">
+			<div class="innerBox">
+				<img id="selectImg" src="./images/lc1.png" alt="">
+			</div>
+			<div class="postBtnBox">
+				<button class="btn postAll">提交</button>
+				<button class="btn">返回</button>
+			</div>
+		</div>
+		<div class="hiddenBox"></div>
+	</div>
+	<script src="./js/jquery-3.3.1.min.js"></script>
+	<script src="./js/html2canvas.min.js"></script>
+	<script>
+		//type 0表示文本 1表示数字 2表示select 3表示文本域 4表示时间
+		var info = [
+			{
+				typeName:'设备1',
+				params:[
+					{
+						name:'参数1',
+						value:'参数1的值',
+						info:[
+							{
+								type:0,
+								name:'内容1',
+								value:'',
+							},
+							{
+								type:1,
+								name:'内容2',
+								value:''
+							},
+							{
+								type:2,
+								name:'内容3',
+								value:'',
+							},
+							{
+								type:3,
+								name:'内容4',
+								value:1,
+							},
+						]
+					},
+					{
+						name:'参数2',
+						value:'参数2的值',
+						info:[
+							{
+								type:0,
+								name:'内容1',
+								value:'',
+							}
+						]
+					},
+					{
+						name:'参数3',
+						value:'参数3的值',
+						info:[
+							{
+								type:0,
+								name:'内容1',
+								value:'',
+							},
+							{
+								type:1,
+								name:'内容2',
+								value:''
+							},
+							{
+								type:2,
+								name:'内容3',
+							}
+						]
+					},
+					{
+						name:'参数4',
+						value:'参数4的值',
+						info:[
+							{
+								type:3,
+								name:'内容3',
+								value:1
+							},
+						]
+					},
+				]
+			},
+			{
+				typeName:'设备2',
+				params:[
+					{
+						name:'参数1',
+						value:'参数1的值',
+						info:[
+							{
+								type:0,
+								name:'内容1',
+								value:'',
+							}
+						]
+					},
+					{
+						name:'参数2',
+						value:'参数2的值',
+						info:[
+							{
+								type:0,
+								name:'内容1',
+								value:'',
+							},
+							{
+								type:1,
+								name:'内容2',
+								value:''
+							},
+							{
+								type:2,
+								name:'内容3',
+								value:1,
+							}
+						],
+					},
+					{
+						name:'参数3',
+						value:'参数3的值',
+						info:[
+							{
+								type:0,
+								name:'内容1',
+								value:'',
+							},
+							{
+								type:1,
+								name:'内容2',
+								value:''
+							},
+							{
+								type:2,
+								name:'内容3',
+								value:1,
+							}
+						],
+					},
+					{
+						name:'参数4',
+						value:'参数4的值',
+						info:[
+							{
+								type:0,
+								name:'内容1',
+								value:'',
+							},
+							{
+								type:1,
+								name:'内容2',
+								value:''
+							},
+							{
+								type:2,
+								name:'内容3',
+								value:1
+							}
+						]
+					},
+				]
+			},
+			{
+				typeName:'设备3',
+				params:[
+					{
+						name:'参数1',
+						value:'参数1的值',
+						info:[
+							{
+								type:0,
+								name:'内容1',
+								value:'',
+							},
+							{
+								type:1,
+								name:'内容2',
+								value:''
+							},
+							{
+								type:2,
+								name:'内容3',
+								value:1,
+							}
+						],
+					},
+					{
+						name:'参数2',
+						value:'参数2的值',
+						info:[
+							{
+								type:0,
+								name:'内容1',
+								value:'',
+							},
+							{
+								type:1,
+								name:'内容2',
+								value:''
+							},
+							{
+								type:2,
+								name:'内容3',
+								value:1,
+							}
+						]
+					},
+					{
+						name:'参数3',
+						value:'参数3的值',
+						info:[],
+					},
+					{
+						name:'参数4',
+						value:'参数4的值',
+						info:[],
+					},
+				]
+			}
+		];
+		var postList = [] , boxIndex = 0, zIndex = 0;
+
+		var box_width = 300;
+		var eidt_box_width = 500;
+		var plane = $(".operationBox");
+
+		loadOptionList();
+		init();
+
+		//加载参数列表信息
+		function loadOptionList(){
+			var optionList_ele = $(".optionList");
+			for(var i = 0 ; i < info.length; i++){
+				var li = document.createElement("li");
+				li.className = "optionLi";
+				li.innerHTML = "<button class='optionBtn' index="+i+">"+info[i].typeName+"</button>";
+				optionList_ele.append(li);
+			}
+		}
+
+		function init(){
+			$(".innerBox").css("height",$("#selectImg").height());
+		}
+
+		function newBox(x, y, list, zIndex){
+			this.x = x;
+			this.y = y;
+			this.list = list;
+			this.index = boxIndex++;
+			this.zIndex = zIndex;
+			this.create();
+			this.startMove();
+		}
+
+		newBox.prototype.create = function(){
+			var paramBox = document.createElement("div");
+			var that = this;
+			paramBox.className = "paramBox";
+			paramBox.style.width = box_width+"px";
+			paramBox.style.display = "block";
+			paramBox.style.zIndex = this.zIndex;
+			paramBox.style.left = this.x+"px";
+			paramBox.style.top = this.y+"px";
+
+			var inner = "<div class='header'><div class='title'><a class='getName'>"+this.list.typeName+"</a></div><a class='deleteBtn'><i class='iconfont icon-cha'></i></a><input class='setName' type='text'/></div><div class='body'><ul class='params_list'>";
+			var data = this.list.params;
+			for(var item in data){
+				inner+="<li class='params_li'><span>"+data[item].name+":</span><div class='answer'>"+data[item].value+"</div></li>";
+			}
+			inner+="</ul></div>";
+			paramBox.innerHTML = inner;
+			plane.append(paramBox);
+			this.box = paramBox;
+		}
+
+		newBox.prototype.changeMove = function(){
+			var that = this;
+			$(that.box).on("mousedown",function(e){
+				stopPropagation(e);
+				
+				that.zIndex = ++zIndex;
+				var dx = e.clientX - that.x;
+				var dy = e.clientY - that.y;
+
+				$(document).on("mousemove",function(f){
+					stopPropagation(f);
+
+					that.x = f.clientX - dx;
+					that.y = f.clientY - dy;
+
+					boxMove(that,that.x,that.y,that.zIndex);
+				})
+			
+				$(document).on("mouseup",function(g){
+					stopPropagation(g);
+
+					var endX = g.clientX - dx;
+					var endY = g.clientY - dy;
+
+					var list = postList;
+
+					postList[getListIndex(that.index)].x = endX;
+					postList[getListIndex(that.index)].y = endY;
+					// console.log(postList);
+
+					$(document).off("mousemove");
+					$(document).off("mouseup");
+				})
+			});
+		}
+
+		newBox.prototype.showEditBox = function(){
+			var that = this;
+			$(that.box).find(".params_li").on("click",function(e){
+				stopPropagation(e);
+				new newEditBox(copyNewObj(that.list),that.index,$(this).index());
+			})
+		}
+
+		newBox.prototype.deleteSelf = function(){
+			var that = this;
+			$(that.box).find(".deleteBtn").on("click",function(event){
+				stopPropagation(event);
+
+				$(this).parents(".paramBox").remove();
+
+				postList.splice(getListIndex(that.index),1);
+			})
+		}
+
+		newBox.prototype.setName = function(){
+			var flag = true, that = this;
+			$(that.box).find(".getName").on("click",function(event){
+
+				stopPropagation(event);
+
+				var title = this;
+				var ele = $(this).parent().siblings(".setName");
+
+				ele.css("display","block");
+				ele.attr("placeholder",this.innerHTML);
+				ele.focus();
+				
+				$(that.box).find(".setName").on("mouseleave",function(event){
+					stopPropagation(event);
+					// title.innerHTML = this.value;
+					$(this).css("display","none");
+
+					$(that.box).find(".setName").off("mouseleave");
+					$(that.box).find(".setName").off("keydown");
+				});
+
+				$(that.box).find(".setName").on("keydown",function(event){
+					stopPropagation(event);
+
+					if(event.keyCode == 13){
+						$(this).css("display","none");
+						title.innerHTML = this.value;
+
+						postList[getListIndex(that.index)].list.typeName = this.value;
+						// console.log(postList);
+
+						$(that.box).find(".setName").off("mouseleave");
+						$(that.box).find(".setName").off("keydown");
+					}
+				});
+			}).on("mousedown",function(event){stopPropagation(event);});
+		}
+
+		newBox.prototype.startMove = function(){
+			var that = this;
+			$(document).on("mousemove",function(f){
+
+				that.x = gotX(f.clientX);
+				that.y = gotY(f.clientY);
+
+				boxMove(that,that.x,that.y,that.zIndex);
+			})
+		
+			$(document).on("mouseup",function(g){
+				var endX = gotX(g.clientX);
+				var endY = gotY(g.clientY);
+
+				//加入
+				$(that.box).remove();
+				$(".innerBox").append(that.box);
+				that.x -= $(".optionBox").width();
+				boxMove(that,that.x,that.y,that.zIndex);
+				//
+
+				var data = {};
+				data.list = that.list;
+				data.x = endX;
+				data.y = endY;
+				data.index = that.index;
+
+				postList.push(data);
+
+				$(document).off("mousemove");
+				$(document).off("mouseup");
+
+				that.changeMove();
+				that.deleteSelf();
+				that.setName();
+				that.showEditBox();
+			})
+		}
+
+		function newEditBox(list,index,no){
+			this.list = list;
+			this.index = index;
+			this.no = no;
+			this.create();
+		}
+
+		newEditBox.prototype.create = function(){
+			var that = this;
+
+			$(".hiddenBox").css("display","block");
+			
+			var editBox = document.createElement("div");
+			var that = this;
+			var list = this.list.params[this.no].info;
+			editBox.className = "editBox";
+			editBox.style.width = eidt_box_width+"px";
+			editBox.style.display = "block";
+			editBox.style.left = (plane.width()/2 - eidt_box_width/2)+"px";
+			// editBox.style.top = plane.height()/2+"px";
+			
+			var inner = "<div class='header'><div class='title'>编辑采样点</div><a class='quitEdit'><i class='iconfont icon-cha'></i></a></div><div class='body'>";
+			for(var i = 0; i < list.length; i++){
+				inner += "<li class='infoItem'><label for=''>"+list[i].name+"</label><div class='inputVal'>"
+				inner += switchInput(list[i].type,list[i].value);
+				inner += "</div></li>";
+			}
+			inner += "</div><div class='footer'><button class='btn saveData'>保存</button><button class='btn'>删除</button><button class='btn quitEdit'>取消</button></div>";
+			editBox.innerHTML = inner;
+			plane.append(editBox);
+
+			editBox.style.top = plane.height()/2 - $(editBox).height()/2 + "px";
+			this.box = editBox;
+
+			this.operationMove();
+
+			function switchInput(type,value){
+				var str = "";
+				switch(type){
+					case 0:
+						str = "<input class='pointVal' type='text' value='"+value+"' />";
+						break;
+					case 1:
+						str = "<input class='pointVal' type='number' value='"+value+"' />";
+						break;
+					case 2:
+						var list = [
+							{name:'1',value:1},
+							{name:'2',value:2},
+							{name:'3',value:3},
+						]
+						str =  "<select class='pointVal'>";
+						for(var item in list){
+							if(list[item].value == value){
+								str+="<option value='"+list[item].value+"' selected>"+list[item].name+"</option>";
+							}else{
+								str+="<option value='"+list[item].value+"'>"+list[item].name+"</option>"
+							}
+						}
+						str+="</select>";
+						break;
+					case 3:
+						str = "<textarea id='textarea' class='pointVal'>"+value+"</textarea>"
+						break;
+					default:
+						break;
+				}
+				return str;
+			}
+		}
+
+		newEditBox.prototype.operationMove = function(){
+			var that = this;
+
+			$('.hiddenBox').on('click',closeEditBox);
+			$('.quitEdit').on('click',closeEditBox);
+			$('.saveData').on('click',function(event){
+
+				var list = $(that.box).find('.pointVal');
+
+				for(var i = 0; i < list.length; i++){
+					that.list.params[that.no].info[i].value = $(list[i]).val();
+				}
+
+				closeEditBox(event);
+
+				console.log(postList);
+				// console.log(info);
+			})
+			
+			function closeEditBox(event){
+				stopPropagation(event);
+
+				$('.editBox').remove();
+				$('.hiddenBox').css("display","none");
+			}
+		}
+
+		function gotX(x){
+			return x - box_width/2;
+		}
+
+		function gotY(y){
+			return y - 10;
+		}
+
+		function boxMove(ele,x,y,index){
+			ele.box.style.left = x+"px";
+			ele.box.style.top = y+"px";
+			ele.box.style.zIndex = index;
+		}
+
+		function getListIndex(index){
+			for(var i = 0; i < postList.length;i++){
+				if(postList[i].index == index){
+					return i;
+				}
+			}
+		}
+
+		function stopPropagation(e){
+			e = e || window.event;
+			if(e.stopPropagation) {
+			    e.stopPropagation();
+			} else {
+			    e.cancelBubble = true;
+			}
+		}
+
+		function copyNewObj(obj){
+			var newObj = {};
+			for(var key in obj){
+				newObj[key] = obj[key];
+			}
+			return newObj;
+		}
+
+		function copyAllNewObj(obj){
+			var newObj = {};
+			if(obj instanceof Array){
+				newObj = [];
+			}
+			for(var item in obj){
+				if(obj[item] instanceof Object){
+					if(obj instanceof Array){
+						newObj.push(copyAllNewObj(obj[item]));
+					}else{
+						newObj[item] = copyAllNewObj(obj[item]);
+					}
+				}else{
+					newObj[item] = obj[item];
+				}
+			}
+			// console.log(newObj);
+			return newObj;
+		}
+
+		$(".postAll").on("click",function(e){
+			// let shareContent = document.getElementsByClassName("operationBox")[0],//需要截图的包裹的（原生的）DOM 对象
+			let shareContent = document.getElementsByClassName("innerBox")[0],
+			width = shareContent.offsetWidth,//shareContent.offsetWidth; //获取dom 宽度
+			height = shareContent.offsetHeight,//shareContent.offsetHeight; //获取dom 高度
+			canvas = document.createElement("canvas"), //创建一个canvas节点
+			scale = 1; //定义任意放大倍数 支持小数
+			canvas.width = width * scale; //定义canvas 宽度 * 缩放
+			canvas.height = height * scale; //定义canvas高度 *缩放
+			canvas.style.width = shareContent.offsetWidth * scale/4 + "px";
+			canvas.style.height = shareContent.offsetHeight * scale/4 + "px";
+			canvas.style.position = 'absolute';
+			canvas.style.left = 0;
+			canvas.style.top = 0;
+			canvas.getContext("2d").scale(scale, scale); //获取context,设置scale
+			let opts = {
+				scale: scale, // 添加的scale 参数
+				canvas: canvas, //自定义 canvas
+				logging: false, //日志开关，便于查看html2canvas的内部执行流程
+				width: width, //dom 原始宽度
+				height: height,
+				useCORS: true // 【重要】开启跨域配置
+			};
+			html2canvas(shareContent,opts).then(function(canvas){
+				var postTipBox = document.createElement("div");
+				postTipBox.className = "postTipBox";
+				var tipWidth = shareContent.offsetWidth * scale/2 + 40;
+				var tipHeight = shareContent.offsetHeight * scale/2 + 100;
+				postTipBox.style.width = tipWidth + "px";
+				postTipBox.style.height = tipHeight + "px";
+				postTipBox.style.top = plane.height()/2 - tipHeight/2+"px";
+				postTipBox.style.left = plane.width()/2 - tipWidth/2+"px";
+				postTipBox.innerHTML = "<div class='header'><span>是否这样提交</span><a class='returnMenu'><i class='iconfont icon-cha'></i></a></div><div class='body'></div><div class='footer'><button class='btn confirmAll'>确认</button><button class='btn returnMenu'>取消</button></div>"
+				document.body.appendChild(postTipBox);
+				postTipBox.appendChild(canvas);
+				// document.body.appendChild(canvas);
+				
+				canvas.className = "myScreenPic";
+				canvas.style.width = shareContent.offsetWidth * scale/2 + "px";
+				canvas.style.height = shareContent.offsetHeight * scale/2 + "px";
+		        // var dataUrl = canvas.toDataURL();
+		        // var newImg = new Image();
+		        // newImg.setAttribute("crossOrigin",'Anonymous');
+		        // newImg.src =  dataUrl;
+		        
+		        $(".hiddenBox").css('display','block');
+
+		        $(".hiddenBox").on('click',closePostBox);
+		        $(".returnMenu").on("click",closePostBox);
+
+		        $(".confirmAll").on('click',function(){
+		        	alert('提交成功');
+		        })
+		        function closePostBox(event){
+		        	stopPropagation(event);
+
+					$('.postTipBox').remove();
+					$('.hiddenBox').css("display","none");
+		        }
+			});
+		});
+
+		$(".optionBtn").on("mousedown",function(e){
+			var that = this;
+			new newBox(gotX(e.clientX),gotY(e.clientY),copyAllNewObj(info[$(that).attr("index")]),++zIndex);
+		});
+	</script>
+</body>
+</html>
